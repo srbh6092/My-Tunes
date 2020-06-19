@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout mTabLayout;
     ViewPager mViewPager;
     ViewPagerAdapter mViewPagerAdapter;
-    ArrayList<MusicFiles> musicFiles;
+    static ArrayList<MusicFiles> musicFiles;
 
     public static final int REQUEST_CODE = 1;
 
@@ -38,8 +38,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initViewPager();
         permission();
 
+    }
+
+    private void initViewPager() {
         mTabLayout = (TabLayout)findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -47,17 +51,14 @@ public class MainActivity extends AppCompatActivity {
         mViewPagerAdapter.addFragment(new AlbumsFragment(),"Albums");
         mViewPager.setAdapter(mViewPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-
     }
+
 
     private void permission() {
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
         else
-        {
-            Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
             musicFiles = getAllAudio(this);
-        }
     }
 
     @Override
@@ -66,10 +67,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode==REQUEST_CODE)
         {
             if(grantResults[0]==PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
                 musicFiles = getAllAudio(this);
-            }
             else
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE);
         }
