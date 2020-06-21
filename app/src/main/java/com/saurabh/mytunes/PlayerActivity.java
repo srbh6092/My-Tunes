@@ -7,6 +7,8 @@ import androidx.palette.graphics.Palette;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -23,13 +25,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import static com.saurabh.mytunes.MainActivity.musicFiles;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    TextView mSongName, mSongArtist, mDurationPlayed, mDurationTotal;
+    TextView mNowPlaying, mSongName, mSongArtist, mDurationPlayed, mDurationTotal;
     ImageView mAlbumArt, mPrevious, mNext, mShuffle, mRepeat, mBack, mMenu;
     FloatingActionButton mPlay;
     SeekBar mSeekBar;
@@ -49,6 +52,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         position = getIntent().getIntExtra("position",-1);
 
+        mNowPlaying = findViewById(R.id.nowPlaying);
         mSongName = findViewById(R.id.songName);
         mSongArtist = findViewById(R.id.songArtist);
         mDurationPlayed = findViewById(R.id.durationPlayed);
@@ -201,7 +205,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void metaData(Uri uri)
     {
-        byte[] art= null;
+        byte[] art = null;
         try{
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(uri.toString());
@@ -210,6 +214,14 @@ public class PlayerActivity extends AppCompatActivity {
             art = retriever.getEmbeddedPicture();
             Bitmap bitmap;
             retriever.release();
+            if(art==null)
+            {
+                Drawable drawable = getResources().getDrawable(R.drawable.defaultart);
+                bitmap = ((BitmapDrawable)drawable).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                art = stream.toByteArray();
+            }
             if(art!=null){
                 Glide.with(this).asBitmap().load(art).into(mAlbumArt);
                 bitmap = BitmapFactory.decodeByteArray(art,0,art.length);
@@ -225,8 +237,11 @@ public class PlayerActivity extends AppCompatActivity {
                             mGradient.setBackground(gradientDrawable);
                             GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{swatch.getRgb(),swatch.getRgb()});
                             mContainer.setBackground(gradientDrawableBg);
+                            mNowPlaying.setTextColor(swatch.getTitleTextColor());
                             mSongName.setTextColor(swatch.getTitleTextColor());
                             mSongArtist.setTextColor(swatch.getBodyTextColor());
+                            mDurationPlayed.setTextColor(swatch.getBodyTextColor());
+                            mDurationTotal.setTextColor(swatch.getBodyTextColor());
                         }
                         else
                         {

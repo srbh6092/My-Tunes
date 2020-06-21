@@ -32,6 +32,7 @@
             android:layout_gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"
+            android:id="@+id/nowPlaying"
             android:text="Now Playing"/>
 
         <Space
@@ -70,7 +71,7 @@
     </RelativeLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
@@ -81,7 +82,7 @@
         android:text="Song Name"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_gravity="center"
@@ -114,6 +115,7 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="10dp"
                 android:text="1:41"
+                android:textColor="#C8C8C8"
                 android:textSize="15dp"
                 android:id="@+id/durationPlayed"/>
 
@@ -130,9 +132,9 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="10dp"
                 android:text="2:56"
+                android:textColor="#C8C8C8"
                 android:textSize="15dp"
                 android:id="@+id/durationTotal"/>
-
 
         </LinearLayout>
 

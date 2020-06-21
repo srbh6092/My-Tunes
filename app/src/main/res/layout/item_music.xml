@@ -3,13 +3,15 @@
     android:id="@+id/itemAudio"
     android:layout_width="match_parent"
     android:layout_marginTop="3sp"
+    android:paddingHorizontal="3sp"
     android:layout_height="wrap_content">
 
     <ImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:id="@+id/imgMusic"
-        android:src="@mipmap/ic_launcher_round"
+        android:scaleType="centerCrop"
+        android:src="@drawable/defaultart"
         android:paddingHorizontal="5sp"/>
     
     <TextView
@@ -17,6 +19,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/fileNameMusic"
         android:text="File Name"
+        android:textColor="#595858"
         android:layout_toRightOf="@id/imgMusic"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10sp" />
