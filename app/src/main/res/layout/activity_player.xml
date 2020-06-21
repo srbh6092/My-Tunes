@@ -60,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:textSize="25dp"
         android:textStyle="bold"
         android:id="@+id/songName"
@@ -70,6 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:textSize="20dp"
         android:id="@+id/songArtist"
         android:text="Song Artist"/>

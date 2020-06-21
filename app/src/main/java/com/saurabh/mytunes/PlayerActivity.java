@@ -2,6 +2,7 @@ package com.saurabh.mytunes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -56,7 +58,11 @@ public class PlayerActivity extends AppCompatActivity {
 
         listSongs = musicFiles;
         if(listSongs!=null)
+        {
             getIntentMethods();
+            mSongName.setText(listSongs.get(position).getTitle());
+            mSongArtist.setText(listSongs.get(position).getArtist());
+        }
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -114,5 +120,24 @@ public class PlayerActivity extends AppCompatActivity {
             mediaPlayer.start();
         }
         mSeekBar.setMax(mediaPlayer.getDuration()/1000);
+        metaData(uri);
     }
+
+    private void metaData(Uri uri)
+    {
+        byte[] art= null;
+        try{
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(uri.toString());
+            int durationTotal = Integer.parseInt(listSongs.get(position).getDuration())/1000;
+            mDurationTotal.setText(formattedTime(durationTotal));
+            art = retriever.getEmbeddedPicture();
+            retriever.release();
+            if(art!=null)
+                Glide.with(this).asBitmap().load(art).into(mAlbumArt);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
