@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import static com.saurabh.mytunes.MainActivity.musicFiles;
 
-public class PlayerActivity extends AppCompatActivity {
+public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener{
 
     TextView mNowPlaying, mSongName, mSongArtist, mDurationPlayed, mDurationTotal;
     ImageView mAlbumArt, mPrevious, mNext, mShuffle, mRepeat, mBack, mMenu;
@@ -76,6 +76,7 @@ public class PlayerActivity extends AppCompatActivity {
             getIntentMethods();
             mSongName.setText(listSongs.get(position).getTitle());
             mSongArtist.setText(listSongs.get(position).getArtist());
+            mediaPlayer.setOnCompletionListener(this);
         }
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -112,17 +113,13 @@ public class PlayerActivity extends AppCompatActivity {
                 mPrevious.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        prevBtnClicked();
+                        position=(position-1)<0?listSongs.size()-1:position-1;
+                        startSongAtPosition();
                     }
                 });
             }
         };
         prevThread.start();;
-    }
-
-    private void prevBtnClicked() {
-        position=(position-1)<0?listSongs.size()-1:position-1;
-        startSongAtPosition();
     }
 
     private void playThreadBtn() {
@@ -160,17 +157,13 @@ public class PlayerActivity extends AppCompatActivity {
                 mNext.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        nextBtnClicked();
+                        position=((position+1)%listSongs.size());
+                        startSongAtPosition();
                     }
                 });
             }
         };
         nextThread.start();;
-    }
-
-    private void nextBtnClicked() {
-        position=((position+1)%listSongs.size());
-        startSongAtPosition();
     }
 
     private String formattedTime(int mCurrentPosition) {
@@ -199,8 +192,12 @@ public class PlayerActivity extends AppCompatActivity {
             mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
             mediaPlayer.start();
         }
+        mSongName.setText(listSongs.get(position).getTitle());
+        mSongArtist.setText(listSongs.get(position).getArtist());
+        setDurationSeekBar();
         mSeekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
+        mediaPlayer.setOnCompletionListener(this);
     }
 
     private void metaData(Uri uri)
@@ -274,6 +271,7 @@ public class PlayerActivity extends AppCompatActivity {
         mSongArtist.setText(listSongs.get(position).getArtist());
         setDurationSeekBar();
         mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(this);
     }
 
     private void setDurationSeekBar() {
@@ -292,4 +290,12 @@ public class PlayerActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        if(mediaPlayer!=null){
+            position=((position+1)%listSongs.size());
+            getIntentMethods();
+            mediaPlayer.setOnCompletionListener(this);
+        }
+    }
 }
