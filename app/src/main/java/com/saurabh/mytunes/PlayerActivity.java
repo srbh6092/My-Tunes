@@ -2,6 +2,7 @@ package com.saurabh.mytunes;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.palette.graphics.Palette;
 
 import android.graphics.Bitmap;
@@ -84,13 +85,12 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 if(mediaPlayer!=null && b)
                     mediaPlayer.seekTo(i*1000);
             }
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
         setDurationSeekBar();

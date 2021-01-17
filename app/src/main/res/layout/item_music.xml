@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemAudio"
     android:layout_width="match_parent"
-    android:layout_marginTop="3sp"
-    android:paddingHorizontal="3sp"
+    android:layout_marginTop="5sp"
+    android:paddingHorizontal="5sp"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:id="@+id/imgMusic"
-        android:scaleType="centerCrop"
-        android:src="@drawable/defaultart"
-        android:paddingHorizontal="5sp"/>
+        app:cardCornerRadius="4dp"
+        android:elevation="4dp"
+        android:id="@+id/cardView"
+        android:paddingHorizontal="5sp">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/imgMusic"
+            android:scaleType="centerCrop"
+            android:src="@drawable/defaultart"/>
+
+    </androidx.cardview.widget.CardView>
     
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +30,7 @@
         android:id="@+id/fileNameMusic"
         android:text="File Name"
         android:textColor="#595858"
-        android:layout_toRightOf="@id/imgMusic"
+        android:layout_toRightOf="@id/cardView"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10sp" />
 

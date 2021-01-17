@@ -55,11 +55,20 @@
         android:layout_marginTop="50dp"
         android:layout_gravity="center">
 
-        <ImageView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:id="@+id/albumArt"/>
+            app:cardCornerRadius="12dp"
+            android:elevation="5dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:elevation="5dp"
+                android:id="@+id/albumArt"/>
+
+        </androidx.cardview.widget.CardView>
 
         <ImageView
             android:layout_width="match_parent"
