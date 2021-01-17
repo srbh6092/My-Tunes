@@ -48,41 +48,29 @@
             android:src="@drawable/ic_menu"/>
         
     </LinearLayout>
-    
-    <RelativeLayout
+
+    <androidx.cardview.widget.CardView
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="50dp"
-        android:layout_gravity="center">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="12dp"
-            android:elevation="5dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:elevation="5dp"
-                android:id="@+id/albumArt"/>
-
-        </androidx.cardview.widget.CardView>
+        android:layout_gravity="center"
+        app:cardCornerRadius="15dp"
+        android:elevation="20dp"
+        android:id="@+id/cardView">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:id="@+id/gradient"
-            android:layout_gravity="center"/>
+            android:elevation="5dp"
+            android:id="@+id/albumArt"/>
 
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="20dp"

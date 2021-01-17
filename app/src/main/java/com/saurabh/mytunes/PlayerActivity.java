@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.palette.graphics.Palette;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -17,6 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -35,6 +38,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
     TextView mNowPlaying, mSongName, mSongArtist, mDurationPlayed, mDurationTotal;
     ImageView mAlbumArt, mPrevious, mNext, mShuffle, mRepeat, mBack, mMenu;
+    CardView mCardView;
     FloatingActionButton mPlay;
     SeekBar mSeekBar;
     int position;
@@ -58,6 +62,8 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         mSongArtist = findViewById(R.id.songArtist);
         mDurationPlayed = findViewById(R.id.durationPlayed);
         mDurationTotal = findViewById(R.id.durationTotal);
+
+        mCardView=findViewById(R.id.cardView);
 
         mAlbumArt = findViewById(R.id.albumArt);
         mPrevious = findViewById(R.id.previous);
@@ -93,6 +99,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
         setDurationSeekBar();
 
     }
@@ -184,14 +191,9 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         {
             mediaPlayer.stop();
             mediaPlayer.release();
-            mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-            mediaPlayer.start();
         }
-        else
-        {
-            mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-            mediaPlayer.start();
-        }
+        mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
+        mediaPlayer.start();
         mSongName.setText(listSongs.get(position).getTitle());
         mSongArtist.setText(listSongs.get(position).getArtist());
         setDurationSeekBar();
@@ -220,35 +222,28 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 art = stream.toByteArray();
             }
             if(art!=null){
-                Glide.with(this).asBitmap().load(art).into(mAlbumArt);
                 bitmap = BitmapFactory.decodeByteArray(art,0,art.length);
+                ImageAnimation(this,mAlbumArt,bitmap);
                 Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(@Nullable Palette palette) {
                         Palette.Swatch swatch = palette.getDominantSwatch();
-                        ImageView mGradient = findViewById(R.id.gradient);
                         LinearLayout mContainer = findViewById(R.id.linearLayout);
+                        GradientDrawable gradientDrawableBg;
                         if(swatch!=null)
                         {
-                            GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{swatch.getRgb(),0x00000000});
-                            mGradient.setBackground(gradientDrawable);
-                            GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{swatch.getRgb(),swatch.getRgb()});
-                            mContainer.setBackground(gradientDrawableBg);
+                            gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{swatch.getRgb(),swatch.getRgb()});
                             mNowPlaying.setTextColor(swatch.getTitleTextColor());
-                            mSongName.setTextColor(swatch.getTitleTextColor());
-                            mSongArtist.setTextColor(swatch.getBodyTextColor());
                             mDurationPlayed.setTextColor(swatch.getBodyTextColor());
                             mDurationTotal.setTextColor(swatch.getBodyTextColor());
                         }
                         else
                         {
-                            GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{0xff000000,0x00000000});
-                            mGradient.setBackground(gradientDrawable);
-                            GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{0xff000000,0xff000000});
-                            mContainer.setBackground(gradientDrawableBg);
-                            mSongName.setTextColor(Color.RED);
-                            mSongArtist.setTextColor(Color.BLUE);
+                            gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{0xff000000,0xff000000});
                         }
+                        mContainer.setBackground(gradientDrawableBg);
+                        mSongName.setTextColor(swatch.getTitleTextColor());
+                        mSongArtist.setTextColor(swatch.getBodyTextColor());
                     }
                 });
             }
@@ -297,5 +292,39 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
             getIntentMethods();
             mediaPlayer.setOnCompletionListener(this);
         }
+    }
+
+    public void ImageAnimation(final Context context, final ImageView imageView, final Bitmap bitmap){
+        final Animation animIn = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+        Animation animOut = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
+        animOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                Glide.with(context).load(bitmap).into(imageView);
+                animIn.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                imageView.startAnimation(animIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        imageView.startAnimation(animOut);
     }
 }
