@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager mViewPager;
     ViewPagerAdapter mViewPagerAdapter;
     static ArrayList<MusicFiles> musicFiles;
+    static boolean songShuffle=false,songRepeat=false;
 
     public static final int REQUEST_CODE = 1;
 

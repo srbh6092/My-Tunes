@@ -183,7 +183,7 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="10dp"
                 android:id="@+id/repeat"
-                android:src="@drawable/ic_repeat_off"/>
+                android:src="@drawable/ic_repeat_one_off"/>
 
         </LinearLayout>
 

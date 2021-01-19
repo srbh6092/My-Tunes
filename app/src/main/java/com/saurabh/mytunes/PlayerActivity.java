@@ -17,6 +17,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,8 +32,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.saurabh.mytunes.MainActivity.musicFiles;
+import static com.saurabh.mytunes.MainActivity.songRepeat;
+import static com.saurabh.mytunes.MainActivity.songShuffle;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener{
 
@@ -41,7 +45,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     CardView mCardView;
     FloatingActionButton mPlay;
     SeekBar mSeekBar;
-    int position;
+    int position, positionAdded;
 
     static ArrayList<MusicFiles> listSongs = new ArrayList<>();
     static MediaPlayer mediaPlayer;
@@ -55,7 +59,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        position = getIntent().getIntExtra("position",-1);
+        positionAdded = getIntent().getIntExtra("position",-1);
 
         mNowPlaying = findViewById(R.id.nowPlaying);
         mSongName = findViewById(R.id.songName);
@@ -77,9 +81,14 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
 
         mSeekBar = findViewById(R.id.seekBar);
 
-        listSongs = musicFiles;
-        if(listSongs!=null)
-        {
+        if(!listSongs.contains(musicFiles.get(positionAdded))){
+            listSongs.add(musicFiles.get(positionAdded));
+            Toast.makeText(this,listSongs.get(position).getTitle()+" is added to the queue",Toast.LENGTH_SHORT).show();
+        }
+        else
+            Toast.makeText(this,listSongs.get(position).getTitle()+" is already present the queue",Toast.LENGTH_SHORT).show();
+        position=listSongs.size()-1;
+        if(listSongs!=null){
             getIntentMethods();
             mSongName.setText(listSongs.get(position).getTitle());
             mSongArtist.setText(listSongs.get(position).getArtist());
@@ -91,7 +100,6 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 if(mediaPlayer!=null && b)
                     mediaPlayer.seekTo(i*1000);
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -101,6 +109,33 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         });
 
         setDurationSeekBar();
+
+        mShuffle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(songShuffle){
+                    songShuffle=false;
+                    mShuffle.setImageResource(R.drawable.ic_shuffle_off);
+                }
+                else{
+                    songShuffle=true;
+                    mShuffle.setImageResource(R.drawable.ic_shuffle_on);
+                }
+            }
+        });
+        mRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(songRepeat){
+                    songRepeat=false;
+                    mRepeat.setImageResource(R.drawable.ic_repeat_one_off);
+                }
+                else{
+                    songRepeat=true;
+                    mRepeat.setImageResource(R.drawable.ic_repeat_one_on);
+                }
+            }
+        });
 
     }
 
@@ -164,13 +199,20 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 mNext.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        position=((position+1)%listSongs.size());
-                        startSongAtPosition();
+                        next();
                     }
                 });
             }
         };
         nextThread.start();;
+    }
+
+    public void next(){
+        if(songShuffle && !songRepeat)
+            position = (new Random()).nextInt(listSongs.size());
+        else if(!songShuffle && !songRepeat)
+            position=((position+1)%listSongs.size());
+        startSongAtPosition();
     }
 
     private String formattedTime(int mCurrentPosition) {
@@ -187,12 +229,13 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     private void getIntentMethods() {
         mPlay.setImageResource(R.drawable.ic_pause);
         uri = Uri.parse(listSongs.get(position).getPath());
-        if(mediaPlayer!=null)
-        {
+        if(mediaPlayer!=null){
             mediaPlayer.stop();
             mediaPlayer.release();
         }
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
+        Log.e("No. of songs", Integer.toString(listSongs.size()));
+        Log.e("Playing", Integer.toString(position+1));
         mediaPlayer.start();
         mSongName.setText(listSongs.get(position).getTitle());
         mSongArtist.setText(listSongs.get(position).getArtist());
@@ -238,9 +281,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                             mDurationTotal.setTextColor(swatch.getBodyTextColor());
                         }
                         else
-                        {
                             gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,new int[]{0xff000000,0xff000000});
-                        }
                         mContainer.setBackground(gradientDrawableBg);
                         mSongName.setTextColor(swatch.getTitleTextColor());
                         mSongArtist.setTextColor(swatch.getBodyTextColor());
@@ -253,6 +294,8 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     }
 
     private void startSongAtPosition() {
+        Log.e("No. of songs", Integer.toString(listSongs.size()));
+        Log.e("Playing", Integer.toString(position+1));
         if(mediaPlayer.isPlaying())
         {
             mediaPlayer.stop();
@@ -288,7 +331,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         if(mediaPlayer!=null){
-            position=((position+1)%listSongs.size());
+            next();
             getIntentMethods();
             mediaPlayer.setOnCompletionListener(this);
         }
