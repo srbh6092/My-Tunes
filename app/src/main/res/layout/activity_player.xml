@@ -44,7 +44,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:id="@+id/menu"
+            android:id="@+id/queue"
             android:src="@drawable/ic_menu"/>
         
     </LinearLayout>
@@ -55,6 +55,7 @@
         android:layout_marginTop="50dp"
         android:layout_gravity="center"
         app:cardCornerRadius="15dp"
+        app:cardBackgroundColor="@color/colorAccent"
         android:elevation="20dp"
         android:id="@+id/cardView">
 

@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager mViewPager;
     ViewPagerAdapter mViewPagerAdapter;
     static ArrayList<MusicFiles> musicFiles;
-    static boolean songShuffle=false,songRepeat=false;
+    static boolean songShuffle=false,songRepeat=false,queuePlayer;
 
     public static final int REQUEST_CODE = 1;
 
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        queuePlayer=false;
         initViewPager();
         permission();
 

@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import androidx.palette.graphics.Palette;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,13 +36,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.saurabh.mytunes.MainActivity.musicFiles;
+import static com.saurabh.mytunes.MainActivity.queuePlayer;
 import static com.saurabh.mytunes.MainActivity.songRepeat;
 import static com.saurabh.mytunes.MainActivity.songShuffle;
 
 public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener{
 
     TextView mNowPlaying, mSongName, mSongArtist, mDurationPlayed, mDurationTotal;
-    ImageView mAlbumArt, mPrevious, mNext, mShuffle, mRepeat, mBack, mMenu;
+    ImageView mAlbumArt, mPrevious, mNext, mShuffle, mRepeat, mBack, mQueue;
     CardView mCardView;
     FloatingActionButton mPlay;
     SeekBar mSeekBar;
@@ -75,19 +77,21 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
         mShuffle = findViewById(R.id.shuffle);
         mRepeat = findViewById(R.id.repeat);
         mBack = findViewById(R.id.back);
-        mMenu = findViewById(R.id.menu);
+        mQueue = findViewById(R.id.queue);
 
         mPlay = findViewById(R.id.play);
 
         mSeekBar = findViewById(R.id.seekBar);
 
-        if(!listSongs.contains(musicFiles.get(positionAdded))){
+        if(!listSongs.contains(musicFiles.get(positionAdded))&&!queuePlayer){
             listSongs.add(musicFiles.get(positionAdded));
             Toast.makeText(this,listSongs.get(position).getTitle()+" is added to the queue",Toast.LENGTH_SHORT).show();
         }
         else
             Toast.makeText(this,listSongs.get(position).getTitle()+" is already present the queue",Toast.LENGTH_SHORT).show();
         position=listSongs.size()-1;
+        if(queuePlayer)
+            position=positionAdded;
         if(listSongs!=null){
             getIntentMethods();
             mSongName.setText(listSongs.get(position).getTitle());
@@ -134,6 +138,24 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                     songRepeat=true;
                     mRepeat.setImageResource(R.drawable.ic_repeat_one_on);
                 }
+            }
+        });
+
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        mQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), QueueActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
