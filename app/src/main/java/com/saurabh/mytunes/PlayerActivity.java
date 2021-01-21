@@ -177,14 +177,22 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 mPrevious.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        position=(position-1)<0?listSongs.size()-1:position-1;
-                        startSongAtPosition();
+                        previous();
                     }
                 });
             }
         };
         prevThread.start();;
     }
+
+    public void previous(){
+        if(songShuffle && !songRepeat)
+            position = (new Random()).nextInt(listSongs.size());
+        else if(!songShuffle && !songRepeat)
+            position=(position-1)<0?listSongs.size()-1:position-1;
+        startSongAtPosition();
+    }
+
 
     private void playThreadBtn() {
         playThread = new Thread(){
@@ -199,7 +207,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 });
             }
         };
-        playThread.start();;
+        playThread.start();
     }
 
     private void playPauseBtnClicked() {
@@ -226,7 +234,7 @@ public class PlayerActivity extends AppCompatActivity implements MediaPlayer.OnC
                 });
             }
         };
-        nextThread.start();;
+        nextThread.start();
     }
 
     public void next(){
